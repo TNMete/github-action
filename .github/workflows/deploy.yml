@@ -21,6 +21,6 @@ jobs:
       - name: Check Datei auf EC2
         run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "ls -l ~/meinOrdner && head -n 1 ~/meinOrdner/info.txt"
       - name: Cowsay installieren
-        run: ssh -i ~/.ssh/meinPrivateKey.pem ubuntu@${{ secrets.EC2_IP }} "sudo apt update -y && sudo apt install -y cowsay"
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "sudo apt update -y && sudo apt install -y cowsay"
       - name: Cowsay ausführen
         run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} 'cowsay "Hallo Muhhhhhheib'
