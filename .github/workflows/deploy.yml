@@ -16,6 +16,13 @@ jobs:
           ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
       - name: Build Docker image
         run: docker build -t my-frontend ./frontend
+      - name: Install Docker on EC2
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{secrets.EC2_IP}} "
+         sudo apt update -y &&
+         sudo apt install -y docker.io &&
+         sudo systemctl enable docker &&
+         sudo systemctl start docker
+         "
       - name: Save Docker image as tar
         run: docker save my-frontend -o my-frontend.tar
       - name: Copy Docker image to EC2
