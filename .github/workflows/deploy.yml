@@ -14,6 +14,15 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/meinKey.pem
           chmod 400 ~/.ssh/meinKey.pem
           ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+      - name: Build Docker image
+        run: docker build -t my-frontend .
+      - name: Save Docker image as tar
+        run: docker save my-frontend -o my-frontend.tar
+      - name: Copy Docker image to EC2
+        run: scp -i ~/.ssh/meinKey.pem my-frontend.tar ubuntu@${{secrets.EC2_IP}}:/home/ubuntu/my-frontend.tar
+      - name: Load and run Docker container on EC2
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{secrets.EC2_IP}} "docker load -i /home/ubuntu/my-frontend.tar && docker rm -f my-frontend || true && docker run -d --name my-frontend -p 80:80 my-frontend"
+         
       - name: Ordner auf EC2 anlegen
         run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "mkdir -p ~/meinOrdner"
       - name: Datei kopieren
@@ -23,4 +32,4 @@ jobs:
       - name: Cowsay installieren
         run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "sudo apt update -y && sudo apt install -y cowsay"
       - name: Cowsay ausführen
-        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} cowsay "Hallo Muhhhhhheib"
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "cowsay 'Hallo Muhhhhhheib'"
