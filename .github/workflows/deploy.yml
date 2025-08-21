@@ -1,0 +1,26 @@
+name: Hausaufgabe
+
+on: push
+
+jobs:
+  Hausaufgabe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: SSH setup
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/meinKey.pem
+          chmod 400 ~/.ssh/meinKey.pem
+          ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
+      - name: Ordner auf EC2 anlegen
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "mkdir -p ~/meinOrdner"
+      - name: Datei kopieren
+        run: scp -i ~/.ssh/meinKey.pem meinOrdner/info.txt ubuntu@${{ secrets.EC2_IP }}:~/meinOrdner/info.txt
+      - name: Check Datei auf EC2
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "ls -l ~/meinOrdner && head -n 1 ~/meinOrdner/info.txt"
+      - name: Cowsay installieren
+        run: ssh -i ~/.ssh/meinPrivateKey.pem ubuntu@${{ secrets.EC2_IP }} "sudo apt update -y && sudo apt install -y cowsay"
+      - name: Cowsay ausführen
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} 'cowsay "Hallo Muhhhhhheib'
