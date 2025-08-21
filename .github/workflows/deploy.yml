@@ -23,4 +23,4 @@ jobs:
       - name: Cowsay installieren
         run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} "sudo apt update -y && sudo apt install -y cowsay"
       - name: Cowsay ausführen
-        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} 'cowsay "Hallo Muhhhhhheib'
+        run: ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_IP }} cowsay "Hallo Muhhhhhheib"
