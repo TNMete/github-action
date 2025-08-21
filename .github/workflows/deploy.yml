@@ -15,7 +15,7 @@ jobs:
           chmod 400 ~/.ssh/meinKey.pem
           ssh-keyscan -H ${{ secrets.EC2_IP }} >> ~/.ssh/known_hosts
       - name: Build Docker image
-        run: docker build -t my-frontend .
+        run: docker build -t my-frontend ./frontend
       - name: Save Docker image as tar
         run: docker save my-frontend -o my-frontend.tar
       - name: Copy Docker image to EC2
