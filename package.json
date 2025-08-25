@@ -1,0 +1,23 @@
+{
+  "name": "github_actions_ha",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000g\u0000i\u0000t\u0000h\u0000u\u0000b\u0000-\u0000a\u0000c\u0000t\u0000i\u0000o\u0000n\u0000",
+  "main": "index.js",
+  "devDependencies": {
+    "jest": "^30.0.5"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TNMete/github-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TNMete/github-action/issues"
+  },
+  "homepage": "https://github.com/TNMete/github-action#readme"
+}
