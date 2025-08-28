@@ -1,0 +1,23 @@
+name: Deploy to Test
+
+on: push
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/meinKey.pem
+          chmod 400 ~/.ssh/meinKey.pem
+          ssh-keyscan -H ${{ secrets.EC2_Test_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Test EC2
+        run: |
+          scp -i ~/.ssh/meinKey.pem index.html ubuntu@${{ secrets.EC2_TEST_IP }}:/home/ubuntu/index.html
+          ssh -i ~/.ssh/meinKey.pem ubuntu@${{ secrets.EC2_TEST_IP }} "sudo mv /home/ubuntu/index.html /var/www/html/index.html && sudo systemctl reload nginx"

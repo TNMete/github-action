@@ -1,0 +1,30 @@
+name: Deploy to Prod
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/meinKey.pem
+          chmod 400 ~/.ssh/meinKey.pem
+          for ip in ${{ secrets.EC2_PROD_IP }}; do
+            ssh-keyscan -H $ip >> ~/.ssh/known_hosts
+          done
+
+      - name: Deploy to Prod EC2s
+        run: |
+          for ip in ${{ secrets.EC2_PROD_IP }}; do
+            scp -i ~/.ssh/meinKey.pem index.html ubuntu@$ip:/home/ubuntu/index.html
+            ssh -i ~/.ssh/meinKey.pem ubuntu@$ip "sudo mv /home/ubuntu/index.html /var/www/html/index.html && sudo systemctl reload nginx"
+          done
