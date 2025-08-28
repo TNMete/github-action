@@ -25,6 +25,6 @@ jobs:
       - name: Deploy to Prod EC2s
         run: |
           for ip in ${{ secrets.EC2_PROD_IP }}; do
-            scp -i ~/.ssh/meinKey.pem index.html ubuntu@$ip:/home/ubuntu/index.html
+            scp -i ~/.ssh/meinKey.pem frontend/index.html ubuntu@$ip:/home/ubuntu/index.html
             ssh -i ~/.ssh/meinKey.pem ubuntu@$ip "sudo mv /home/ubuntu/index.html /var/www/html/index.html && sudo systemctl reload nginx"
           done
